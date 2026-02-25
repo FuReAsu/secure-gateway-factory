@@ -1,7 +1,8 @@
 .terraform*
-!.teraform.lock.hcl
+!.terraform.lock.hcl
 .env*
 !.env.example
 *.priv
 *.tfvars
-!example.auto.tfvars
+*.tfplan
+!example.tfvars
