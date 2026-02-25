@@ -1,0 +1,5 @@
+.terraform*
+!.teraform.lock.hcl
+.env*
+!.env.example
+*.priv
