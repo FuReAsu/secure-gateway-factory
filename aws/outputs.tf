@@ -6,7 +6,7 @@ output "ssh_keypair_name" {
   value = var.keypair_name
 }
 
-output "ramdomized_ports" {
+output "randomized_ports" {
   value = [
     random_shuffle.vpn_ports.result[0],
     random_shuffle.vpn_ports.result[1],
