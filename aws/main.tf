@@ -38,6 +38,12 @@ resource "random_shuffle" "vpn_ports" {
   }
 }
 
+//Create Keypair
+resource "aws_key_pair" "vpn-factory-key" {
+  key_name = var.keypair_name
+  public_key = file("../ssh-keys/vpn-factory-key.pub")
+}
+
 //VPC & Networking
 resource "aws_vpc" "vpn-factory-vpc" {
   cidr_block = var.vpc_cidr
