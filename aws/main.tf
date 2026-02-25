@@ -30,7 +30,7 @@ locals {
 
 //Shuffle the list and get 3 results
 resource "random_shuffle" "vpn_ports" {
-  input        = local.port_strings
+  input        = sensitive(local.port_strings)
   result_count = 3
 
   keepers = {
