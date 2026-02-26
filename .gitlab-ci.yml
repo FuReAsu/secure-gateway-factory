@@ -32,7 +32,7 @@ stages:
 
 aws-provision:
   rules:
-    - if: '"$[[ inputs.cloud-provider ]]" == "aws"'
+    - if: "$[[ inputs.cloud-provider ]] == 'aws' && ($CI_PIPELINE_SOURCE == 'web' || $CI_PIPELINE_SOURCE == 'api')"
       when: manual
   extends: .provision-instance-template
   before_script:
