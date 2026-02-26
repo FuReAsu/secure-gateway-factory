@@ -3,6 +3,7 @@ spec:
     cloud-provider:
       default: aws
       type: string
+      description: Which cloud provider to use for VPN
       options:
         - 'aws'
         - 'gcp'
