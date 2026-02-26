@@ -1,17 +1,19 @@
-stages:
-  - provision
-  - install
-  - generate
-  - destroy
-
 specs:
   inputs:
     cloud-provider:
+      default: aws
       type: string
       options:
         - 'aws'
         - 'gcp'
         - 'do'
+---
+
+stages:
+  - provision
+  - install
+  - generate
+  - destroy
 
 .provision-instance-template:
   stage: provision
