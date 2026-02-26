@@ -4,7 +4,7 @@ stages:
   - generate
   - destroy
 
-spec:
+specs:
   inputs:
     cloud-provider:
       type: string
