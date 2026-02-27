@@ -144,7 +144,7 @@ stages:
 
 .all-init: &all-init
   - echo "Setting global variables"
-  - printf '%s="%s"\n' "gl_user" "FuReAsu" >> ci.auto.tfvars
+  - printf '%s="%s"\n' "gl_user" "$CI_USER" >> ci.auto.tfvars
   - printf '%s="%s"\n' "gl_pat" "$CI_PAT" >> ci.auto.tfvars
   - printf '%s="%s"\n' "region" "$[[ inputs.region ]]" >> ci.auto.tfvars
 
