@@ -167,14 +167,12 @@ aws-provision:
   extends: .provision-instance-template
   before_script:
     - |
-      declare -a VARS=( 'AWS_INSTANCE_TYPE' 'AWS_KEYPAIR_NAME' 'REGION' 'AWS_ACCESS_KEY' 'AWS_SECRET_KEY' 'AWS_VPC_CIDR' )
+      declare -a VARS=('AWS_INSTANCE_TYPE' 'AWS_KEYPAIR_NAME' 'REGION' 'AWS_ACCESS_KEY' 'AWS_SECRET_KEY' 'AWS_VPC_CIDR')
       for VAR in "${VARS[@]}"; do
         if [[ -v $VAR ]]; then 
-          echo "$VAR is set"; 
+          echo "$VAR is set"
           tfvar="${VAR#AWS_}"
-          cat << EOF >> ci.auto.tfvars
-          "$tfvar"="${!VAR}"
-          EOF
+          printf '%s="%s"\n' "$tfvar" "${!VAR}" >> ci.auto.tfvars
         fi
       done
 
