@@ -8,7 +8,7 @@ spec:
         - 'aws'
         - 'gcp'
         - 'do'
-    REGION:
+    region:
       description: AWS region to deploy the instance in
       rules:
         - if: $[[ inputs.cloud-provider ]] == 'aws'
@@ -149,6 +149,7 @@ stages:
       when: manual
   before_script:
     - cd ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]
+    - export REGION=$[[ inputs.region ]]
     - |
       declare -a VARS=( 'AWS_INSTANCE_TYPE' 'AWS_KEYPAIR_NAME' 'REGION' 'AWS_ACCESS_KEY' 'AWS_SECRET_KEY' 'AWS_VPC_CIDR' )
       for VAR in "${VARS[@]}"; do
@@ -157,7 +158,7 @@ stages:
           tfvar="${VAR#AWS_}"
           printf '%s="%s"\n' "$tfvar" "${!VAR}" >> ci.auto.tfvars
         else
-          echo "$VAR is not set"
+          echo "$VAR is not set. Using default"
         fi
       done
     - ls -ltr ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/ci.auto.tfvars
