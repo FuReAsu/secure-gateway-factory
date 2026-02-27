@@ -155,7 +155,7 @@ stages:
         if [[ -v $VAR ]]; then 
           echo "$VAR is set"
           tfvar="${VAR#AWS_}"
-          printf '%s="%s"\n' "$tfvar" "${!VAR}" >> ci.auto.tfvars
+          printf '%s="%s"\n' "$tfvar" "${!VAR}" >> ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/ci.auto.tfvars
         fi
       done
     - ls -ltr ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/ci.auto.tfvars
