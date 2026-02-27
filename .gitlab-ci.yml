@@ -8,8 +8,7 @@ spec:
         - 'AWS'
         - 'GCP'
         - 'DO'
-    REGION:
-      type: string
+    region:
       description: AWS region to deploy the instance in
       rules:
         - if: $[[ inputs.cloud_provider ]] == 'AWS'
@@ -144,7 +143,7 @@ aws-provision:
   extends: .provision-instance-template
   before_script:
     - |
-      declare -a VARS=( 'AWS_INSTANCE_TYPE' 'AWS_KEYPAIR_NAME' 'REGION' 'AWS_ACCESS_KEY' 'AWS_SECRET_KEY' 'AWS_VPC_CIDR' )
+      declare -a VARS=( 'AWS_INSTANCE_TYPE' 'AWS_KEYPAIR_NAME' 'region' 'AWS_ACCESS_KEY' 'AWS_SECRET_KEY' 'AWS_VPC_CIDR' )
       for VAR in "${VARS[@]}"; do
         if [[ -v $VAR ]]; then 
           echo "$VAR is set"; 
