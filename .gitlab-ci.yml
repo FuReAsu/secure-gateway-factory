@@ -124,7 +124,7 @@ stages:
 .provision-instance-template:
   stage: provision
   image: 
-    name: fureasu346/opentofu:1.11.5
+    name: fureasu346/opentofu:v1.11.5
     entrypoint: [""]
   script:
     - cd $[[ inputs.cloud-provider ]]
@@ -149,7 +149,7 @@ tear-down:
       when: manual
   needs: []
   image: 
-    name: fureasu346/opentofu:1.11.5
+    name: fureasu346/opentofu:v1.11.5
     entrypoint: [""]
   script:
     - tofu init
