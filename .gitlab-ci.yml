@@ -131,9 +131,9 @@ stages:
     name: $[[ inputs.cloud-provider ]]-$[[ inputs.region ]]
     on_stop: $[[ inputs.cloud-provider ]]-tear-down
   script:
-    - tofu init
-    - tofu plan -out $[[ inputs.cloud-provider ]].tfplan
-    - tofu apply $[[ inputs.cloud-provider ]].tfplan
+    - tofu init -input=false -reconfigure
+    - tofu plan -input=false -out $[[ inputs.cloud-provider ]].tfplan
+    - tofu apply -input=false $[[ inputs.cloud-provider ]].tfplan
     - tofu show -json > ${CI_PIPELINE_ID}.json
   artifacts:
     paths:
@@ -189,9 +189,9 @@ aws-provision:
     name: fureasu346/opentofu:v1.11.5
     entrypoint: [""]
   script:
-    - tofu init
-    - tofu plan -destroy -out ${CI_PIPELINE_ID}.destroy.tfplan
-    - tofu apply ${CI_PIPELINE_ID}.destroy.tfplan
+    - tofu init -input=false -reconfigure
+    - tofu plan -input=false -destroy -out ${CI_PIPELINE_ID}.destroy.tfplan
+    - tofu apply -input=false ${CI_PIPELINE_ID}.destroy.tfplan
     - echo "Deleting state file"
     - |
       curl --request DELETE \
