@@ -129,7 +129,6 @@ stages:
     entrypoint: [""]
   script:
     - sed -i "s|dev|$CI_PIPELINE_ID|" backend.tf
-    - cat ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/ci.auto.tfvars
     - tofu init
     - tofu plan -out $[[ inputs.cloud-provider ]].tfplan
     - tofu apply $[[ inputs.cloud-provider ]].tfplan
@@ -144,7 +143,7 @@ stages:
       - ${CI_PROJECT_DIR}/.terraform
 
 .all-init: &all-init
-  - echo "Setting region"
+  - echo "Setting global variables"
   - printf '%s="%s"\n' "gl_user" "FuReAsu" >> ci.auto.tfvars
   - printf '%s="%s"\n' "gl_pat" "$CI_PAT" >> ci.auto.tfvars
   - printf '%s="%s"\n' "region" "$[[ inputs.region ]]" >> ci.auto.tfvars
@@ -168,7 +167,6 @@ stages:
           echo "$VAR is not set. Using default"
         fi
       done
-    - ls -ltr ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/ci.auto.tfvars
 
 aws-provision:
   <<: *aws-init
