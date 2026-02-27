@@ -132,8 +132,8 @@ stages:
     on_stop: $[[ inputs.cloud-provider ]]-tear-down
   script:
     - tofu init -input=false -reconfigure
-    - tofu plan -input=false -out $[[ inputs.cloud-provider ]].tfplan
-    - tofu apply -input=false $[[ inputs.cloud-provider ]].tfplan
+    - tofu plan -input=false -out ${CI_PIPELINE_ID}.tfplan
+    - tofu apply -input=false ${CI_PIPELINE_ID}.tfplan
     - tofu show -json > ${CI_PIPELINE_ID}.json
   artifacts:
     paths:
