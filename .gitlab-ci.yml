@@ -148,14 +148,14 @@ stages:
     - if: '"$[[ inputs.cloud-provider ]]" == "aws" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api")'
       when: manual
   before_script:
+    - cd ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]
     - |
-      cd ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]
       declare -a VARS=('AWS_INSTANCE_TYPE' 'AWS_KEYPAIR_NAME' 'REGION' 'AWS_ACCESS_KEY' 'AWS_SECRET_KEY' 'AWS_VPC_CIDR')
       for VAR in "${VARS[@]}"; do
-        if [[ -v $VAR ]]; then 
+        if [[ -v ${!VAR} ]]; then 
           echo "$VAR is set"
           tfvar="${VAR#AWS_}"
-          printf '%s="%s"\n' "$tfvar" "${!VAR}" >> ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/ci.auto.tfvars
+          printf '%s="%s"\n' "$tfvar" "${!VAR}" >> ci.auto.tfvars
         fi
       done
     - ls -ltr ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/ci.auto.tfvars
@@ -171,11 +171,9 @@ tear-down:
     name: fureasu346/opentofu:v1.11.5
     entrypoint: [""]
   script:
-    - |
-      cd ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]
-      tofu init
-      tofu plan -destroy -out $[[ inputs.cloud-provider ]].destroy.tfplan
-      tofu apply $[[ inputs.cloud-provider ]].destroy.tfplan
+    - tofu init
+    - tofu plan -destroy -out $[[ inputs.cloud-provider ]].destroy.tfplan
+    - tofu apply $[[ inputs.cloud-provider ]].destroy.tfplan
   cache:
     key: tofu-files
     paths:
