@@ -141,8 +141,11 @@ stages:
       - ${CI_PROJECT_DIR}/.terraform
 
 tear-down:
-  needs: []
   stage: destroy
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api" 
+      when: manual
+  needs: []
   image: fureasu346/opentofu:1.11.5
   script:
     - tofu init
