@@ -145,21 +145,13 @@ stages:
       - ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/.terraform
 
 .all-init: &all-init
+  - cd ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]
   - sed -i "s|dev|$CI_PIPELINE_ID|" backend.tf
   - echo "Setting global variables"
   - printf '%s="%s"\n' "gl_user" "$CI_USER" >> ci.auto.tfvars
   - printf '%s="%s"\n' "gl_pat" "$CI_PAT" >> ci.auto.tfvars
   - printf '%s="%s"\n' "region" "$[[ inputs.region ]]" >> ci.auto.tfvars
-
-.aws-init: &aws-init
-  rules:
-    - if: '"$[[ inputs.cloud-provider ]]" == "aws" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api")'
-      when: manual
-  before_script:
-    - cd ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]
-    - *all-init
-    - |
-      declare -a VARS=( 'AWS_INSTANCE_TYPE' 'AWS_KEYPAIR_NAME' 'AWS_ACCESS_KEY' 'AWS_SECRET_KEY' 'AWS_VPC_CIDR' )
+  - |
       for VAR in "${VARS[@]}"; do
         if [ -n "${!VAR+x}" ]; then
           echo "$VAR is set"
@@ -170,6 +162,15 @@ stages:
           echo "$VAR is not set. Using default"
         fi
       done
+
+
+.aws-init: &aws-init
+  rules:
+    - if: '"$[[ inputs.cloud-provider ]]" == "aws" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api")'
+      when: manual
+  before_script:
+    - declare -a VARS=( 'AWS_INSTANCE_TYPE' 'AWS_KEYPAIR_NAME' 'AWS_ACCESS_KEY' 'AWS_SECRET_KEY' 'AWS_VPC_CIDR' )
+    - *all-init
 
 aws-provision:
   <<: *aws-init
