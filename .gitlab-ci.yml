@@ -202,6 +202,7 @@ aws-provision:
     key: tofu-files
     paths:
       - ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/.terraform
+  manual_confirmation: "Are you sure you want to stop the $[[ inputs.cloud-provider ]]-$[[ inputs.region ]] environment"
 
 aws-tear-down:
   <<: [*aws-init, *tear-down-defaults]
