@@ -160,6 +160,8 @@ aws-tear-down:
     - INFO_FILE="${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/${CI_PIPELINE_ID}.json"
     - INSTANCE_IP=$(jq -r '.values.outputs.instance_ip.value' ${INFO_FILE})
     - chmod 400 "$SSH_PRIV_KEY"
+    - echo "Testing private key file"
+    - ssh-keygen -y -f "$SSH_PRIV_KEY" > /dev/null
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - ssh-keyscan -H "$INSTANCE_IP" >> ~/.ssh/known_hosts
