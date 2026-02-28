@@ -1,8 +1,8 @@
 #!/bin/bash
 
 echo "Checking required variables"
-: "${API_PORTS:?Missing API_PORTS}"
-: "${KEYS_PORTS:?Missing KEYS_PORTS}"
+: "${API_PORT:?Missing API_PORTS}"
+: "${KEYS_PORT:?Missing KEYS_PORTS}"
 
 curl -L https://raw.githubusercontent.com/Jigsaw-Code/outline-apps/master/server_manager/install_scripts/install_server.sh -o install_server.sh 
 
