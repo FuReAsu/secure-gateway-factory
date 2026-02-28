@@ -146,8 +146,10 @@ aws-tear-down:
 
 .remote-access-template:
   image: fureasu346/pipeline-util:v1
-  dependencies:
-    - $[[ inputs.cloud-provider ]]-provision
+  needs:
+    - job: $[[ inputs.cloud-provider ]]-provision
+      artifacts: true
+      optional: false
   before_script:
     - echo "Configuring ssh"
     - INFO_FILE="${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/${CI_PIPELINE_ID}.json"
@@ -157,6 +159,9 @@ aws-tear-down:
     - chmod 700 ~/.ssh
     - ssh-keyscan -H "$INSTANCE_IP" >> ~/.ssh/known_hosts
     - printf "%s" "Host instance\n\tHostName $INSTANCE_IP\n\tUser $SSH_USER\n\tPort 22\n\tIdentityFile $SSH_PRIV_KEY\n" > ~/.ssh/config
+    - cat ~/.ssh/config
+    - echo "Testing ssh connection"
+    - ssh -o BatchMode=yes instance uptime
 
 .outline-install: &outline-install
   stage: install
