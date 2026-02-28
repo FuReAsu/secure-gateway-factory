@@ -173,7 +173,7 @@ aws-tear-down:
   stage: install
   script:
     - API_PORT=$(jq -r '.values.outputs.randomized_ports.value[0]' ${INFO_FILE})
-    - KEYS_PORT=$(jq -r '.values.outputs.randomized_ports.value[0]' ${INFO_FILE})
+    - KEYS_PORT=$(jq -r '.values.outputs.randomized_ports.value[1]' ${INFO_FILE})
     - echo "Sending script file to remote instance"
     - scp scripts/install-outline.sh instance:.
     - ssh instance "
