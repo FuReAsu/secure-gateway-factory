@@ -194,10 +194,15 @@ aws-tear-down:
       artifacts: true
       optional: false
   variables:
-    KEY_NAME: "outline-${CI_JOB_ID}"
+    KEY_NAMES: "outline-${CI_JOB_ID}"
   script:
     - API_URL=$(jq -r '.apiUrl' ${CI_PROJECT_DIR}/outline/outline-api.json )
-    - API_URL="$API_URL" KEY_NAME="$KEY_NAME" bash scripts/get-outline-key.sh
+    - IFS=',' read -ra KEYS <<< "$KEY_NAMES"
+    - |
+      for KEY in "${KEYS[@]}"; do
+        echo "Generating key for $KEY"
+        API_URL="$API_URL" KEY_NAME="$KEY" bash scripts/get-outline-key.sh
+      done
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}/outline
