@@ -146,7 +146,8 @@ aws-tear-down:
 
 .remote-access-template:
   image: fureasu346/pipeline-util:v1
-  dependencies: $[[ inputs.cloud-provider ]]-provision
+  dependencies:
+    - $[[ inputs.cloud-provider ]]-provision
   before_script:
     - echo "Configuring ssh"
     - INFO_FILE="${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/${CI_PIPELINE_ID}.json"
