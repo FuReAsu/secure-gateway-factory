@@ -3,6 +3,7 @@
 mkdir -p $HOME/outline
 LOG_FILE="$HOME/outline/outline.log"
 INSTALL_FILE="$HOME/outline/install_server.sh"
+API_FILE="$HOME/outline/outline-api.json"
 
 echo "==> [CONFIG] Checking required variables..."
 : "${API_PORT:?Error: API_PORT environment variable is not set}"
@@ -22,9 +23,9 @@ echo "==> [EXTRACT] Parsing API configuration..."
 RAW_CONFIG=$(cat "$LOG_FILE" | grep "apiUrl" || true)
 
 if [[ -n "$RAW_CONFIG" ]]; then
-    echo "$RAW_CONFIG" | grep -o '{.*}' > outline-api.json
-    echo "==> [SUCCESS] Configuration saved to outline-api.json"
-    cat outline-api.json
+    echo "$RAW_CONFIG" | grep -o '{.*}' > $API_FILE
+	echo "==> [SUCCESS] Configuration saved to $API_FILE"
+    cat $API_FILE
 else
     echo "==> [ERROR] Could not find apiUrl in installation output."
     exit 1
