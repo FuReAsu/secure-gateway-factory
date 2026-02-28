@@ -159,7 +159,7 @@ aws-tear-down:
     - echo "Configuring ssh"
     - INFO_FILE="${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/${CI_PIPELINE_ID}.json"
     - INSTANCE_IP=$(jq -r '.values.outputs.instance_ip.value' ${INFO_FILE})
-    - LOCAL_KEY="~/.ssh/vpn-factory-key.priv"
+    - LOCAL_KEY="$HOME/.ssh/vpn-factory-key.priv"
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
     - echo "$SSH_PRIV_KEY" > $LOCAL_KEY && chmod 400 $LOCAL_KEY
     - echo "Testing private key file"
