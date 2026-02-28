@@ -46,10 +46,10 @@ spec:
         - if: $[[ inputs.cloud-provider ]] == 'do'
           default: 's-1vcpu-1gb'
           options: ['s-1vcpu-1gb', 's-1vcpu-512mb-10gb', 's-1vcpu-2gb']
-    initial-keynames:
-      description: "Key names to generate initially. Please enter a comma separated string"
+    key-names:
+      description: "Key names to generate in VPN servers. Please enter a comma separated string"
       type: string
-      default: 'key1, key2'
+      default: 'key1,key2'
 ---
 stages:
   - provision
