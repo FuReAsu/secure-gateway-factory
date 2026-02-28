@@ -188,6 +188,10 @@ aws-tear-down:
 
 .outline-key-generate:
   stage: generate
+  needs:
+    - job: $[[ inputs.cloud-provider ]]-outline-install
+      artifacts: true
+      optional: false
   variables:
     KEY_NAME: "outline-${CI_JOB_ID}"
   script:
