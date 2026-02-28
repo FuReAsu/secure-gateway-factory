@@ -159,13 +159,13 @@ aws-tear-down:
     - echo "Configuring ssh"
     - INFO_FILE="${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/${CI_PIPELINE_ID}.json"
     - INSTANCE_IP=$(jq -r '.values.outputs.instance_ip.value' ${INFO_FILE})
-    - echo "" >> "$SSH_PRIV_KEY" && chmod 400 "$SSH_PRIV_KEY"
+    - echo "$SSH_PRIV_KEY" > ~/.ssh/vpn-factory-key.priv && chmod 400 "~/.ssh/vpn-factory-key.priv"
     - echo "Testing private key file"
     - cat -A "$SSH_PRIV_KEY"
     - ssh-keygen -y -f "$SSH_PRIV_KEY" > /dev/null
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
     - ssh-keyscan -H "$INSTANCE_IP" >> ~/.ssh/known_hosts
-    - printf "%b" "Host instance\n\tHostName $INSTANCE_IP\n\tUser $SSH_USER\n\tPort 22\n\tIdentityFile $SSH_PRIV_KEY\n" > ~/.ssh/config
+    - printf "%b" "Host instance\n\tHostName $INSTANCE_IP\n\tUser $SSH_USER\n\tPort 22\n\tIdentityFile ~/.ssh/vpn-factory-key.priv\n" > ~/.ssh/config
     - cat ~/.ssh/config
     - echo "Testing ssh connection"
     - ssh -o BatchMode=yes instance uptime
