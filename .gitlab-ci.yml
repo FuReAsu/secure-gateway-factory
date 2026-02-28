@@ -175,6 +175,9 @@ aws-tear-down:
 
 aws-outline-install:
   <<: *outline-install
+  rules:
+    - if: '"$[[ inputs.cloud-provider ]]" == "aws" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api")'
+      when: manual
   extends: .remote-access-template
   variables:
     SSH_USER: "${AWS_SSH_USER:-ubuntu}"
