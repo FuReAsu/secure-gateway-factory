@@ -161,7 +161,7 @@ aws-tear-down:
     - INSTANCE_IP=$(jq -r '.values.outputs.instance_ip.value' ${INFO_FILE})
     - echo "$SSH_PRIV_KEY" > ~/.ssh/vpn-factory-key.priv && chmod 400 "~/.ssh/vpn-factory-key.priv"
     - echo "Testing private key file"
-    - cat -A "$SSH_PRIV_KEY"
+    - cat -A "~/.ssh/vpn-factory-key.priv"
     - ssh-keygen -y -f "$SSH_PRIV_KEY" > /dev/null
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
     - ssh-keyscan -H "$INSTANCE_IP" >> ~/.ssh/known_hosts
