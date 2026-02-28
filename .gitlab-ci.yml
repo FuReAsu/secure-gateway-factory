@@ -159,13 +159,14 @@ aws-tear-down:
     - echo "Configuring ssh"
     - INFO_FILE="${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/${CI_PIPELINE_ID}.json"
     - INSTANCE_IP=$(jq -r '.values.outputs.instance_ip.value' ${INFO_FILE})
+    - LOCAL_KEY="~/.ssh/vpn-factory-key.priv"
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-    - echo "$SSH_PRIV_KEY" > ~/.ssh/vpn-factory-key.priv && chmod 400 "~/.ssh/vpn-factory-key.priv"
+    - echo "$SSH_PRIV_KEY" > $LOCAL_KEY && chmod 400 $LOCAL_KEY
     - echo "Testing private key file"
-    - cat -A "~/.ssh/vpn-factory-key.priv"
-    - ssh-keygen -y -f "$SSH_PRIV_KEY" > /dev/null
+    - cat -A $LOCAL_KEY
+    - ssh-keygen -y -f $LOCAL_KEY" > /dev/null
     - ssh-keyscan -H "$INSTANCE_IP" >> ~/.ssh/known_hosts
-    - printf "%b" "Host instance\n\tHostName $INSTANCE_IP\n\tUser $SSH_USER\n\tPort 22\n\tIdentityFile ~/.ssh/vpn-factory-key.priv\n" > ~/.ssh/config
+    - printf "%b" "Host instance\n\tHostName $INSTANCE_IP\n\tUser $SSH_USER\n\tPort 22\n\tIdentityFile $LOCAL_KEY\n" > ~/.ssh/config
     - cat ~/.ssh/config
     - echo "Testing ssh connection"
     - ssh -o BatchMode=yes instance uptime
