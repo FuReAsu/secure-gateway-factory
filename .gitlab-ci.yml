@@ -166,7 +166,6 @@ aws-tear-down:
     - ssh-keygen -y -f $LOCAL_KEY > /dev/null
     - ssh-keyscan -H "$INSTANCE_IP" >> ~/.ssh/known_hosts
     - printf "%b" "Host instance\n\tHostName $INSTANCE_IP\n\tUser $SSH_USER\n\tPort 22\n\tIdentityFile $LOCAL_KEY\n" > ~/.ssh/config
-    - cat ~/.ssh/config
     - echo "Testing ssh connection"
     - ssh -o BatchMode=yes instance uptime
 
@@ -177,7 +176,11 @@ aws-tear-down:
     - KEYS_PORT=$(jq -r '.values.outputs.randomized_ports.value[0]' ${INFO_FILE})
     - echo "Sending script file to remote instance"
     - scp scripts/install-outline.sh instance:.
-    - ssh -t instance "bash install-outline.sh"
+    - ssh instance "
+        API_PORT=$API_PORT
+        KEYS_PORT=$KEYS_PORT
+        bash install-outline.sh
+      "
     - scp instance:./outline-api.json .
     - mkdir ${CI_PROJECT_DIR}/outline && mv outline-api.json ${CI_PROJECT_DIR}/outline
   artifacts:
