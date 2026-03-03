@@ -11,3 +11,13 @@ variable "instance_type" {
 variable "do_token" {
   description = "Digital Ocean Personal Access Token"
 }
+
+variable "gl_user" {
+  type = string
+  description = "gitlab user for backend"
+}
+
+variable "gl_pat" {
+  type = string
+  description = "gitlab pat for backend"
+}
