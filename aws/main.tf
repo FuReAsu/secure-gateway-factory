@@ -40,7 +40,7 @@ resource "random_shuffle" "vpn_ports" {
 
 //Create Keypair
 resource "aws_key_pair" "vpn-factory-key" {
-  key_name = var.keypair_name
+  key_name = "vpn-factory-key"
   public_key = file("../ssh-keys/vpn-factory-key.pub")
 }
 
@@ -126,7 +126,7 @@ resource "aws_instance" "vpn-factory-server" {
   instance_type = var.instance_type
   subnet_id = aws_subnet.vpn-factory-subnet.id
   vpc_security_group_ids = [aws_security_group.vpn-factory-sg.id]
-  key_name = var.keypair_name
+  key_name = aws_key_pair.vpn-factory-key.key_name
   tags = {
     Name = "vpn-factory-server"
   }

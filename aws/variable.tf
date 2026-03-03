@@ -3,11 +3,6 @@ variable "instance_type" {
   type = string
 }
 
-variable "keypair_name" {
-  default = "vpn-factory-key"
-  type = string
-}
-
 variable "region" {
   default = "ap-southeast-1"
   type = string
