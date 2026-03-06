@@ -2,7 +2,7 @@
   image: fureasu346/pipeline-util:v1
   before_script:
     - echo "Configuring ssh"
-    - INFO_FILE="${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/${CI_PIPELINE_ID}.json"
+    - INFO_FILE="${CI_PROJECT_DIR}/${PROVIDER}/${CI_PIPELINE_ID}.json"
     - INSTANCE_IP=$(jq -r '.values.outputs.instance_ip.value' ${INFO_FILE})
     - LOCAL_KEY="$HOME/.ssh/vpn-factory-key.priv"
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
