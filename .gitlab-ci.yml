@@ -81,55 +81,42 @@ variables:
     paths:
       - ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/.terraform
 
-.all-init: &all-init
-  - cd ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]
-  - sed -i "s|dev|$CI_PIPELINE_ID|" backend.tf
-  - echo "Setting global variables"
-  - printf '%s="%s"\n' "gl_user" "$CI_USER" >> ci.auto.tfvars
-  - printf '%s="%s"\n' "gl_pat" "$CI_PAT" >> ci.auto.tfvars
-  - |
-    for VAR in "${VARS[@]}"; do
-      if [ -n "${!VAR+x}" ]; then
-        echo "$VAR is set"
-        tfvar="${VAR#AWS_}"
-        tfvar_lc="${tfvar,,}"
-        printf '%s="%s"\n' "$tfvar_lc" "${!VAR}" >> ci.auto.tfvars
-      else
-        echo "$VAR is not set. Using default"
-      fi
-    done
+.prepare-tofu-template:
+  before_script:
+    - cd ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]
+    - IFS=',' read -r -a VARS <<< "$PROVIDER_VARS"
+    - sed -i "s|dev|$CI_PIPELINE_ID|" backend.tf
+    - echo "Setting global variables"
+    - export TF_VAR_gl_user="$CI_USER"
+    - export TF_VAR_gl_pat="$CI_PAT"
+    - |
+      for VAR in "${VARS[@]}"; do
+        if [ -n "${!VAR+x}" ]; then
+          echo "$VAR is set"
+          tfvar="${VAR#AWS_}"
+          tfvar_lc="${tfvar,,}"
+          export TF_VAR_${tfvar_lc}="${!VAR}"
+        else
+          echo "$VAR is not set. Using default"
+        fi
+      done
 
-.aws-init: &aws-init
+.aws-tofu-template:
   variables:
     AWS_REGION: $[[ inputs.region ]]
     AWS_INSTANCE_TYPE: $[[ inputs.instance-type ]]
+    PROVIDER_VARS: "AWS_REGION,AWS_INSTANCE_TYPE,AWS_ACCESS_KEY,AWS_SECRET_KEY,AWS_VPC_CIDR"
   rules:
     - if: '"$[[ inputs.cloud-provider ]]" == "aws" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api")'
       when: manual
-  before_script:
-    - declare -a VARS=( 'AWS_REGION' 'AWS_INSTANCE_TYPE' 'AWS_ACCESS_KEY' 'AWS_SECRET_KEY' 'AWS_VPC_CIDR' )
-    - *all-init
-
-.do-init: &do-init
-  variables:
-    DO_REGION: $[[ inputs.region ]]
-    DO_INSTANCE_TYPE: $[[ inputs.instance-type ]]
-  rules:
-    - if: '"$[[ inputs.cloud-provider ]]" == "do" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api")'
-      when: manual
-  before_script:
-    - declare -a VARS=( 'DO_REGION' 'DO_INSTANCE_TYPE' 'DO_TOKEN' )
-    - *all-init
 
 aws-provision:
-  <<: *aws-init
-  extends: [.provision-instance-template]
+  extends:
+    - .aws-tofu-template
+    - .prepare-tofu-template
+    - .provision-tofu-template
 
-do-provision:
-  <<: *do-init
-  extends: [.provision-instance-template]
-
-.tear-down-template:
+.destory-tofu-template:
   needs:
     - job: $[[ inputs.cloud-provider ]]-provision
       artifacts: false
@@ -158,12 +145,10 @@ do-provision:
   manual_confirmation: "Are you sure you want to stop the $[[ inputs.cloud-provider ]]-$[[ inputs.region ]] environment"
 
 aws-tear-down:
-  <<: *aws-init
-  extends: [.tear-down-template]
-
-do-tear-down:
-  <<: *do-init
-  extends: [.tear-down-template]
+  extends:
+    - .aws-tofu-template
+    - .prepare-tofu-template
+    - .destroy-tofu-template
 
 .remote-access-template:
   image: fureasu346/pipeline-util:v1
@@ -185,7 +170,7 @@ do-tear-down:
     - echo "Testing ssh connection"
     - ssh -o BatchMode=yes instance uptime
 
-.outline-install: &outline-install
+.outline-install-template: 
   stage: install
   script:
     - API_PORT=$(jq -r '.values.outputs.randomized_ports.value[0]' ${INFO_FILE})
@@ -229,32 +214,17 @@ do-tear-down:
     expire_in: 30 days
 
 aws-outline-install:
-  <<: *outline-install
+  extends: 
+    - .outline-install-template
+    - .remote-access-template
   rules:
     - if: '"$[[ inputs.cloud-provider ]]" == "aws" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api")'
       when: manual
-  extends: .remote-access-template
   variables:
     SSH_USER: $AWS_SSH_USER
-
-do-outline-install:
-  <<: *outline-install
-  rules:
-    - if: '"$[[ inputs.cloud-provider ]]" == "do" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api")'
-      when: manual
-  extends: .remote-access-template
-  variables:
-    SSH_USER: $DO_SSH_USER
 
 aws-outline-key-generate:
   extends: [ .outline-key-template ]
   rules:
     - if: '"$[[ inputs.cloud-provider ]]" == "aws" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api")'
       when: manual
-
-do-outline-key-generate:
-  extends: [ .outline-key-template ]
-  rules:
-    - if: '"$[[ inputs.cloud-provider ]]" == "do" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api")'
-      when: manual
-
