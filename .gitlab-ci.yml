@@ -62,9 +62,4 @@ variables:
   INSTANCE_TYPE: $[[ inputs.instance-type ]]
 
 include:
-  - local: 'pipeline/tofu-templates.yaml'
-  - local: 'pipeline/remote-access-templates.yaml'
-  - local: 'pipeline/outline-templates.yaml'
-  - local: 'pipeline/aws.yaml'
-    rules:
-      - if: '$PROVIDER == "aws"'
+  - local: 'pipeline/*.yaml'

@@ -1,11 +1,14 @@
+.aws-rules: &aws-rules
+  rules:
+  - if: '$PROVIDER == "aws" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api")'
+    when: manual
+
 .aws-tofu-template:
+  <<: *aws-rules
   variables:
     AWS_REGION: "${REGION}"
     AWS_INSTANCE_TYPE: "${INSTANCE_TYPE}"
     PROVIDER_VARS: "AWS_REGION,AWS_INSTANCE_TYPE,AWS_ACCESS_KEY,AWS_SECRET_KEY,AWS_VPC_CIDR"
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api"'
-      when: manual
 
 aws-provision:
   extends:
@@ -20,17 +23,13 @@ aws-tear-down:
     - .destroy-tofu-template
 
 aws-outline-install:
+  <<: *aws-rules
   extends: 
     - .outline-install-template
     - .remote-access-template
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api"'
-      when: manual
   variables:
     SSH_USER: $AWS_SSH_USER
 
 aws-outline-key-generate:
+  <<: *aws-rules
   extends: [ .outline-key-template ]
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api"'
-      when: manual
