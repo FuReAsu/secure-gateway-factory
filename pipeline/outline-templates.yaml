@@ -22,10 +22,6 @@
 .outline-key-template:
   stage: generate
   image: fureasu346/pipeline-util:v1
-  needs:
-    - job: $[[ inputs.cloud-provider ]]-outline-install
-      artifacts: true
-      optional: false
   variables:
     KEY_NAMES: "outline-${CI_JOB_ID}"
   script:
