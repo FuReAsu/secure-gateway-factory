@@ -1,6 +1,6 @@
 .prepare-tofu-template:
   before_script:
-    - cd ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]
+    - cd ${CI_PROJECT_DIR}/${PROVIDER}
     - IFS=',' read -r -a VARS <<< "$PROVIDER_VARS"
     - sed -i "s|dev|$CI_PIPELINE_ID|" backend.tf
     - echo "Setting global variables"
@@ -25,8 +25,8 @@
     name: fureasu346/opentofu:v1.11.5
     entrypoint: [""]
   environment:
-    name: $[[ inputs.cloud-provider ]]-$[[ inputs.region ]]
-    on_stop: $[[ inputs.cloud-provider ]]-tear-down
+    name: ${PROVIDER}-${REGION}
+    on_stop: ${PROVIDER}-tear-down
   script:
     - tofu init -input=false -reconfigure
     - tofu plan -input=false -out ${CI_PIPELINE_ID}.tfplan
@@ -34,20 +34,20 @@
     - tofu show -json > ${CI_PIPELINE_ID}.json
   artifacts:
     paths:
-      - ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/${CI_PIPELINE_ID}.json
+      - ${CI_PROJECT_DIR}/${PROVIDER}/${CI_PIPELINE_ID}.json
     expire_in: 30 days
   cache:
     key: tofu-files
     paths:
-      - ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/.terraform
+      - ${CI_PROJECT_DIR}/${PROVIDER}/.terraform
 
 .destroy-tofu-template:
   needs:
-    - job: $[[ inputs.cloud-provider ]]-provision
+    - job: ${PROVIDER}-provision
       artifacts: false
       optional: false
   environment:
-    name: $[[ inputs.cloud-provider ]]-$[[ inputs.region ]]
+    name: ${PROVIDER}-${REGION}
     action: stop
   stage: destroy
   image: 
@@ -66,5 +66,5 @@
   cache:
     key: tofu-files
     paths:
-      - ${CI_PROJECT_DIR}/$[[ inputs.cloud-provider ]]/.terraform
-  manual_confirmation: "Are you sure you want to stop the $[[ inputs.cloud-provider ]]-$[[ inputs.region ]] environment"
+      - ${CI_PROJECT_DIR}/${PROVIDER}/.terraform
+  manual_confirmation: "Are you sure you want to stop the ${PROVIDER}-${REGION} environment"

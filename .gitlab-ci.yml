@@ -57,6 +57,9 @@ variables:
   AWS_SSH_USER: "ubuntu"
   GCP_SSH_USER: "vpn-factory"
   DO_SSH_USER: "root"
+  PROVIDER: $[[ inputs.cloud-provider ]]
+  REGION: $[[ inputs.region ]]
+  INSTANCE_TYPE: $[[ inputs.instance-type ]]
 
 include:
   - local: 'pipeline/tofu-templates.yaml'
@@ -64,8 +67,4 @@ include:
   - local: 'pipeline/outline-templates.yaml'
   - local: 'pipeline/aws.yaml'
     rules:
-      - if: '$[[ inputs.cloud-provider ]] == "aws"'
-    inputs:
-      cloud-provider: $[[ inputs.cloud-provider ]]
-      region: $[[ inputs.region ]]
-      instance-type: $[[ inputs.instance-type ]]
+      - if: '$PROVIDER == "aws"'

@@ -1,16 +1,10 @@
-spec:
-  inputs:
-    cloud-provider:
-    region:
-    instance-type:
-
 .aws-tofu-template:
   variables:
-    AWS_REGION: $[[ inputs.region ]]
-    AWS_INSTANCE_TYPE: $[[ inputs.instance-type ]]
+    AWS_REGION: "${REGION}"
+    AWS_INSTANCE_TYPE: "${INSTANCE_TYPE}"
     PROVIDER_VARS: "AWS_REGION,AWS_INSTANCE_TYPE,AWS_ACCESS_KEY,AWS_SECRET_KEY,AWS_VPC_CIDR"
   rules:
-    - if: '"$[[ inputs.cloud-provider ]]" == "aws" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api")'
+    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api"'
       when: manual
 
 aws-provision:
@@ -30,7 +24,7 @@ aws-outline-install:
     - .outline-install-template
     - .remote-access-template
   rules:
-    - if: '"$[[ inputs.cloud-provider ]]" == "aws" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api")'
+    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api"'
       when: manual
   variables:
     SSH_USER: $AWS_SSH_USER
@@ -38,5 +32,5 @@ aws-outline-install:
 aws-outline-key-generate:
   extends: [ .outline-key-template ]
   rules:
-    - if: '"$[[ inputs.cloud-provider ]]" == "aws" && ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api")'
+    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api"'
       when: manual
