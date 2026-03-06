@@ -1,3 +1,9 @@
+spec:
+  inputs:
+    cloud-provider:
+    region:
+    instance-type:
+
 .aws-tofu-template:
   variables:
     AWS_REGION: $[[ inputs.region ]]

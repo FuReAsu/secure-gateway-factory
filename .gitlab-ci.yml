@@ -59,4 +59,13 @@ variables:
   DO_SSH_USER: "root"
 
 include:
-  - local: 'pipeline/*.yaml'
+  - local: 'pipeline/tofu-templates.yaml'
+  - local: 'pipeline/remote-access-templates.yaml'
+  - local: 'pipeline/outline-templates.yaml'
+  - local: 'pipeline/aws.yaml'
+    rules:
+      - if: $[[ inputs.cloud-provider ]] == 'aws'
+    inputs:
+      cloud-provider: $[[ inputs.cloud-provider ]]
+      region: $[[ inputs.region ]]
+      instance-type: $[[ inputs.instance-type ]]
