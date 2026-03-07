@@ -6,8 +6,8 @@
 .do-tofu-template:
   <<: *do-rules
   variables:
-    AWS_REGION: "${REGION}"
-    AWS_INSTANCE_TYPE: "${INSTANCE_TYPE}"
+    DO_REGION: "${REGION}"
+    DO_INSTANCE_TYPE: "${INSTANCE_TYPE}"
     PROVIDER_VARS: "DO_REGION,DO_INSTANCE_TYPE,DO_TOKEN"
 
 do-provision:
