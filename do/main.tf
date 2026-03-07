@@ -34,15 +34,14 @@ resource "digitalocean_ssh_key" "vpn-factory-key" {
 
 resource "digitalocean_droplet" "vpn-factory-server" {
   image = "ubuntu-24-04-x64"
-  name = "cloud-vpn-server"
+  name = "vpn-factory-server"
   region = var.region
   size = var.instance_type
   ssh_keys = [digitalocean_ssh_key.vpn-factory-key.fingerprint]
 }
 
 resource "digitalocean_firewall" "vpn-factory-firewall" {
-  name = "vpn-factory-ports"
-
+  name = "vpn-factory-firewall"
   droplet_ids = [digitalocean_droplet.vpn-factory-server.id]
 
   // SSH

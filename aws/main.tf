@@ -108,7 +108,7 @@ resource "aws_vpc_security_group_egress_rule" "allow-all-eg" {
 }
 
 //Ingress rules for randomized ports
-resource "aws_vpc_security_group_ingress_rule" "vpn_ingress" {
+resource "aws_vpc_security_group_ingress_rule" "vpn-ingress" {
   count = 6
 
   security_group_id = aws_security_group.vpn-factory-sg.id
