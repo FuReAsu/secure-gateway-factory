@@ -38,8 +38,73 @@ resource "digitalocean_droplet" "vpn-factory-server" {
   region = var.region
   size = var.instance_type
   ssh_keys = [digitalocean_ssh_key.vpn-factory-key.fingerprint]
+}
 
-  timeouts {
-    delete = "5m"
+resource "digitalocean_firewall" "vpn-factory-firewall" {
+  name = "vpn-factory-ports"
+
+  droplet_ids = [digitalocean_droplet.vpn-factory-server.id]
+
+  // SSH
+  inbound_rule {
+    protocol = "tcp"
+    port_range = "22"
+    source_addresses = [ "0.0.0.0/0", "::/0" ]
+  }
+
+  // VPN ports
+  inbound_rule {
+    protocol = "tcp"
+    port_range = random_shuffle.vpn_ports.result[0]
+    source_addresses = [ "0.0.0.0/0", "::/0" ]
+  }
+
+  inbound_rule {
+    protocol = "udp"
+    port_range = random_shuffle.vpn_ports.result[0]
+    source_addresses = [ "0.0.0.0/0", "::/0" ]
+  }
+
+  inbound_rule {
+    protocol = "tcp"
+    port_range = random_shuffle.vpn_ports.result[1]
+    source_addresses = [ "0.0.0.0/0", "::/0" ]
+  }
+
+  inbound_rule {
+    protocol = "udp"
+    port_range = random_shuffle.vpn_ports.result[1]
+    source_addresses = [ "0.0.0.0/0", "::/0" ]
+  }
+
+  inbound_rule {
+    protocol = "tcp"
+    port_range = random_shuffle.vpn_ports.result[2]
+    source_addresses = [ "0.0.0.0/0", "::/0" ]
+  }
+
+  inbound_rule {
+    protocol = "udp"
+    port_range = random_shuffle.vpn_ports.result[2]
+    source_addresses = [ "0.0.0.0/0", "::/0" ]
+  }
+  
+  // All outbound allow
+  outbound_rule {
+    protocol              = "tcp"
+    port_range            = "1-65535"
+    destination_addresses = ["0.0.0.0/0", "::/0"]
+  }
+
+  outbound_rule {
+    protocol              = "udp"
+    port_range            = "1-65535"
+    destination_addresses = ["0.0.0.0/0", "::/0"]
+  }
+
+  outbound_rule {
+    protocol              = "icmp"
+    destination_addresses = ["0.0.0.0/0", "::/0"]
   }
 }
+
