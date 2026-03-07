@@ -46,8 +46,17 @@
     entrypoint: [""]
   script:
     - tofu init -input=false -reconfigure
-    - tofu plan -input=false -destroy -out ${CI_PIPELINE_ID}.destroy.tfplan
-    - tofu apply -input=false ${CI_PIPELINE_ID}.destroy.tfplan
+    - |
+      declare status=123
+      declare count=3
+      while [ "$status" -gt 0 -a "$count" -gt 0 ]; do
+        echo "Trying to destroy resources, $count tries left..."
+        tofu plan -input=false -destroy -out ${CI_PIPELINE_ID}.destroy.tfplan
+        tofu apply -input=false ${CI_PIPELINE_ID}.destroy.tfplan
+        status=$?
+        count=$((count-1))
+      done
+      echo "Resources successfully destroyed..."
     - echo "Deleting state file"
     - |
       curl --request DELETE \
