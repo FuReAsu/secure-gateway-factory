@@ -34,5 +34,5 @@
       done
   artifacts:
     paths:
-      - ${CI_PROJECT_DIR}/outline
+      - ${CI_PROJECT_DIR}/keys/outline
     expire_in: 30 days

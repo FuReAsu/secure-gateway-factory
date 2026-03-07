@@ -1,6 +1,6 @@
 #!/bin/bash
 
-KEY_FILE="outline/${KEY_NAME}.json"
+KEY_FILE="keys/outline/${KEY_NAME}.json"
 
 echo "==> [CONFIG] Checking required variables..."
 : "${API_URL:?Missing API_URL}"
