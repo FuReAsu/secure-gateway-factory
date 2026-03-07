@@ -34,9 +34,14 @@
       done
     - echo "Sending environment information to telegram..."
     - |
-      curl -X POST \
+      curl -s -X POST \
         -d chat_id="${TELEGRAM_CHAT_ID}" \
-        -d text="Provider ==> ${PROVIDER}\nRegion ==> ${REGION}\nPIPELINE_ID ==> ${CI_PIPELINE_ID}\nVPN ==> outline\nKeys are as below" \
+        -d parse_mode="HTML" \
+        -d text="<b>Provider</b> ==> <code>${PROVIDER}</code>
+      <b>Region</b> ==> <code>${REGION}</code>
+      <b>PIPELINE_ID</b> ==> <code>${CI_PIPELINE_ID}</code>
+      <b>VPN</b> ==> outline
+      <i>Keys are as below:</i>" \
         https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage > /dev/null
     - echo "Sending keys to telegram..."
     - declare -a KEY_FILES=($(ls ${CI_PROJECT_DIR}/keys/outline))
@@ -44,14 +49,16 @@
       for KEY_FILE in "${KEY_FILES[@]}"; do
         KEY_NAME=$(jq -r '.name' ${CI_PROJECT_DIR}/keys/outline/${KEY_FILE})
         KEY=$(jq -r '.accessUrl' ${CI_PROJECT_DIR}/keys/outline/${KEY_FILE})
-        curl -X POST \
+        echo "Sending key for ${KEY_NAME}"
+        curl -s -X POST \
           -d chat_id="${TELEGRAM_CHAT_ID}" \
           -d text="${KEY_NAME}" \
           https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage > /dev/null
-        curl -X POST \
+        curl -s -X POST \
           -d chat_id="${TELEGRAM_CHAT_ID}" \
           -d text="${KEY}" \
           https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage > /dev/null
+        sleep 2
       done
     - echo "Successful sent keys to telegram"
   artifacts:
