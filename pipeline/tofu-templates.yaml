@@ -70,7 +70,7 @@
     - |
       curl --request DELETE \
         --header "Private-Token: $CI_PAT" \
-        "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PIPELINE_ID}"
+        "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PIPELINE_ID}-${PROVIDER}"
     - echo "Deployment torn down and tfstate file deleted"
   cache:
     key: tofu-files
