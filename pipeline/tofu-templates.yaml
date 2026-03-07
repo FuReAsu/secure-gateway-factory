@@ -47,16 +47,25 @@
   script:
     - tofu init -input=false -reconfigure
     - |
-      declare status=123
       declare count=3
-      while [ "$status" -gt 0 -a "$count" -gt 0 ]; do
+      declare success=false
+      while [ "$count" -gt 0 ]; do
         echo "Trying to destroy resources, $count tries left..."
         tofu plan -input=false -destroy -out ${CI_PIPELINE_ID}.destroy.tfplan
-        tofu apply -input=false ${CI_PIPELINE_ID}.destroy.tfplan
-        status=$?
-        count=$((count-1))
+        if tofu apply -input=false ${CI_PIPELINE_ID}.destroy.tfplan; then
+          success=true
+          break
+        else
+          echo "Destrying resources failed, trying after 10 seconds..."
+          sleep 10
+          count=$((count-1))
+        fi
       done
-      echo "Resources successfully destroyed..."
+      if [ "$success" = false ]; then
+        echo "Destroying resources failed, exiting..."
+        exit 1
+      fi
+    - echo "Resources successfully destroyed..."
     - echo "Deleting state file"
     - |
       curl --request DELETE \
