@@ -1,0 +1,58 @@
+.ovpn-install-template: 
+  stage: install
+  script:
+    - OVPN_PORT=$(jq -r '.values.outputs.randomized_ports.value[2]' ${INFO_FILE})
+    - echo "Sending script file to remote instance"
+    - scp scripts/ovpn/install-ovpn.sh instance:.
+    - ssh instance "
+        OVPN_PORT=$OVPN_PORT
+        bash install-ovpn.sh
+      "
+    - echo "Cleaning up install script from remote instance"
+    - ssh instance "rm install-ovpn.sh"
+
+.ovpn-key-template:
+  stage: generate
+  image: fureasu346/pipeline-util:v1
+  variables:
+    KEY_NAMES: "ovpn-${CI_JOB_ID}"
+  script:
+    - echo "Sending script file to remote instance"
+    - scp scripts/ovpn/get-ovpn-key.sh instance:.
+    - IFS=',' read -ra KEYS <<< "$KEY_NAMES"
+    - |
+      for KEY in "${KEYS[@]}"; do
+        echo "Generating key for $KEY"
+        ssh instance "KEY_NAME=$KEY bash get-ovpn-key.sh"
+      done
+    - echo "Sending environment information to telegram..."
+    - |
+      curl -s -X POST \
+        -d chat_id="${TELEGRAM_CHAT_ID}" \
+        -d parse_mode="HTML" \
+        -d text="<b>Provider</b> ==> <code>${PROVIDER}</code>
+      <b>Region</b> ==> <code>${REGION}</code>
+      <b>PIPELINE_ID</b> ==> <code>${CI_PIPELINE_ID}</code>
+      <b>VPN</b> ==> OpenVPN
+      <i>Keys are as below:</i>" \
+        https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage > /dev/null
+    - echo "Sending keys to telegram..."
+    - declare -a KEY_FILES=($(ls ${CI_PROJECT_DIR}/keys/ovpn))
+    - |
+      for KEY_FILE in "${KEY_FILES[@]}"; do
+        IFS="." read -r KEY_NAME EXT <<< "$KEY_FILE"
+        echo "Sending key for ${KEY_NAME}"
+        curl -s -X POST \
+          -d chat_id="${TELEGRAM_CHAT_ID}" \
+          -d text="${KEY_NAME}" \
+          https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage > /dev/null
+        curl -v -F chat_id="${TELEGRAM_CHAT_ID}" \
+          -F document=@"${CI_PROJECT_DIR}/keys/ovpn/${KEY_FILE}" \
+          https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument
+        sleep 2
+      done
+    - echo "Successfully sent keys to telegram"
+  artifacts:
+    paths:
+      - ${CI_PROJECT_DIR}/keys/ovpn
+    expire_in: 30 days
