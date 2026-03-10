@@ -41,8 +41,8 @@ spec:
           default: 't2.micro'
           options: ['t2.micro', 't3.micro', 't2.small', 't3.small', 't2.medium', 't3.medium']
         - if: $[[ inputs.cloud-provider ]] == 'gcp'
-          default: 'e2.micro'
-          options: ['e2.micro', 'e2.small', 'e2.medium']
+          default: 'e2-micro'
+          options: ['e2-micro', 'e2-small', 'e2-medium']
         - if: $[[ inputs.cloud-provider ]] == 'do'
           default: 's-1vcpu-1gb'
           options: ['s-1vcpu-1gb', 's-1vcpu-512mb-10gb', 's-1vcpu-2gb']
