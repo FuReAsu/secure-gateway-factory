@@ -51,3 +51,30 @@ do-outline-key-generate:
       optional: false
   <<: *do-rules
   extends: [ .outline-key-template ]
+
+do-ovpn-install:
+  needs:
+    - job: do-provision
+      artifacts: true
+      optional: false
+  <<: *do-rules
+  extends:
+    - .ovpn-install-template
+    - .remote-access-template
+  variables:
+    SSH_USER: $DO_SSH_USER
+
+do-ovpn-key-generate:
+  needs:
+    - job: do-ovpn-install
+      artifacts: false
+      optional: false
+    - job: do-provision
+      artifacts: true
+      optional: false
+  <<: *do-rules
+  extends:
+    - .ovpn-key-template
+    - .remote-access-template
+  variables:
+    SSH_USER: $DO_SSH_USER
