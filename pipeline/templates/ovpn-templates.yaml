@@ -8,6 +8,8 @@
         OVPN_PORT=$OVPN_PORT
         bash install-ovpn.sh
       "
+    - echo "Cleaning up install script from remote instance"
+    - ssh instance "rm install-ovpn.sh"
 
 .ovpn-key-template:
   stage: generate
