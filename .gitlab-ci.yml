@@ -62,4 +62,5 @@ variables:
   INSTANCE_TYPE: $[[ inputs.instance-type ]]
 
 include:
-  - local: 'pipeline/*.yaml'
+  - local: 'pipeline/providers/*.yaml'
+  - local: 'pipeline/templates/*.yaml'
