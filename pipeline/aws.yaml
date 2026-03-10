@@ -67,6 +67,9 @@ aws-ovpn-install:
 aws-ovpn-key-generate:
   needs:
     - job: aws-ovpn-install
+      artifacts: false
+      optional: false
+    - job: aws-provision
       artifacts: true
       optional: false
   <<: *aws-rules
