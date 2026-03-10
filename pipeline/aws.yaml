@@ -71,7 +71,7 @@ aws-ovpn-key-generate:
       optional: false
   <<: *aws-rules
   extends:
-    - .ovpn-install-template
+    - .ovpn-key-template
     - .remote-access-template
   variables:
     SSH_USER: $AWS_SSH_USER
