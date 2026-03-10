@@ -55,7 +55,7 @@ stages:
 
 variables:
   AWS_SSH_USER: "ubuntu"
-  GCP_SSH_USER: "vpn-factory"
+  GCP_SSH_USER: "vpnadmin"
   DO_SSH_USER: "root"
   PROVIDER: $[[ inputs.cloud-provider ]]
   REGION: $[[ inputs.region ]]
