@@ -1,8 +1,8 @@
 terraform {
   backend "http" {
-    address = "https://gitlab.com/api/v4/projects/79772542/terraform/state/dev"
-    lock_address = "https://gitlab.com/api/v4/projects/79772542/terraform/state/dev/lock"
-    unlock_address = "https://gitlab.com/api/v4/projects/79772542/terraform/state/dev/lock"
+    address = "https://gitlab.com/api/v4/projects/79772542/terraform/state/dev-gcp"
+    lock_address = "https://gitlab.com/api/v4/projects/79772542/terraform/state/dev-gcp/lock"
+    unlock_address = "https://gitlab.com/api/v4/projects/79772542/terraform/state/dev-gcp/lock"
     username = var.gl_user
     password = var.gl_pat
     lock_method = "POST"
