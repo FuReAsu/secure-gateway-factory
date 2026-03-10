@@ -50,7 +50,7 @@
           -d chat_id="${TELEGRAM_CHAT_ID}" \
           -d text="${KEY_NAME}" \
           https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage > /dev/null
-        curl -v -F chat_id="${TELEGRAM_CHAT_ID}" \
+        curl -s -F chat_id="${TELEGRAM_CHAT_ID}" \
           -F document=@"${CI_PROJECT_DIR}/keys/ovpn/${KEY_FILE}" \
           https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument
         sleep 2
