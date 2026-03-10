@@ -17,8 +17,8 @@
   variables:
     KEY_NAMES: "ovpn-${CI_JOB_ID}"
   script:
-	- echo "Creating keys/ovpn"
-	- mkdir -p ${CI_PROJECT_DIR}/keys/ovpn
+    - echo "Creating keys/ovpn"
+    - mkdir -p ${CI_PROJECT_DIR}/keys/ovpn
     - echo "Sending script file to remote instance"
     - scp scripts/ovpn/get-ovpn-key.sh instance:.
     - IFS=',' read -ra KEYS <<< "$KEY_NAMES"
