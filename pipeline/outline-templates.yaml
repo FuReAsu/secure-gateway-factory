@@ -60,7 +60,7 @@
           https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage > /dev/null
         sleep 2
       done
-    - echo "Successful sent keys to telegram"
+    - echo "Successfully sent keys to telegram"
   artifacts:
     paths:
       - ${CI_PROJECT_DIR}/keys/outline
