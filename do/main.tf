@@ -1,6 +1,11 @@
 //Generate uuid for seeding
 resource "random_uuid" "seed" {}
 
+//For resource names
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+
 //Get random port numbers for outline and ovpn
 locals {
   start_port = 49152
@@ -28,82 +33,47 @@ resource "random_shuffle" "vpn_ports" {
 }
 
 resource "digitalocean_ssh_key" "vpn-factory-key" {
-  name = "vpn-factory-key"
+  name = "vpn-factory-key-${random_id.suffix.hex}"
   public_key = file("../ssh-keys/vpn-factory-key.pub")
 }
 
 resource "digitalocean_droplet" "vpn-factory-server" {
   image = "ubuntu-24-04-x64"
-  name = "vpn-factory-server"
+  name = "vpn-factory-server-${random_id.suffix.hex}"
   region = var.region
   size = var.instance_type
   ssh_keys = [digitalocean_ssh_key.vpn-factory-key.fingerprint]
 }
 
 resource "digitalocean_firewall" "vpn-factory-firewall" {
-  name = "vpn-factory-firewall"
+  name = "vpn-factory-firewall-${random_id.suffix.hex}"
   droplet_ids = [digitalocean_droplet.vpn-factory-server.id]
 
   // SSH
   inbound_rule {
     protocol = "tcp"
     port_range = "22"
-    source_addresses = [ "0.0.0.0/0", "::/0" ]
+    source_addresses = ["0.0.0.0/0", "::/0"]
   }
 
   // VPN ports
-  inbound_rule {
-    protocol = "tcp"
-    port_range = random_shuffle.vpn_ports.result[0]
-    source_addresses = [ "0.0.0.0/0", "::/0" ]
-  }
-
-  inbound_rule {
-    protocol = "udp"
-    port_range = random_shuffle.vpn_ports.result[0]
-    source_addresses = [ "0.0.0.0/0", "::/0" ]
-  }
-
-  inbound_rule {
-    protocol = "tcp"
-    port_range = random_shuffle.vpn_ports.result[1]
-    source_addresses = [ "0.0.0.0/0", "::/0" ]
-  }
-
-  inbound_rule {
-    protocol = "udp"
-    port_range = random_shuffle.vpn_ports.result[1]
-    source_addresses = [ "0.0.0.0/0", "::/0" ]
-  }
-
-  inbound_rule {
-    protocol = "tcp"
-    port_range = random_shuffle.vpn_ports.result[2]
-    source_addresses = [ "0.0.0.0/0", "::/0" ]
-  }
-
-  inbound_rule {
-    protocol = "udp"
-    port_range = random_shuffle.vpn_ports.result[2]
-    source_addresses = [ "0.0.0.0/0", "::/0" ]
+  dynamic "inbound_rule" {
+    for_each = setproduct(slice(random_shuffle.vpn_ports.result, 0, 3), ["tcp", "udp"])
+    content {
+      port_range = inbound_rule.value[0]
+      protocol = inbound_rule.value[1]
+      source_addresses = ["0.0.0.0/0", "::/0"]
+    }
   }
   
   // All outbound allow
-  outbound_rule {
-    protocol              = "tcp"
-    port_range            = "1-65535"
-    destination_addresses = ["0.0.0.0/0", "::/0"]
-  }
-
-  outbound_rule {
-    protocol              = "udp"
-    port_range            = "1-65535"
-    destination_addresses = ["0.0.0.0/0", "::/0"]
-  }
-
-  outbound_rule {
-    protocol              = "icmp"
-    destination_addresses = ["0.0.0.0/0", "::/0"]
+  dynamic "outbound_rule" {
+    for_each = ["tcp", "udp", "icmp"]
+    content {
+      port_range = outbound_rule.value == "icmp" ? null : "1-65535"
+      protocol = outbound_rule.value
+      destination_addresses = ["0.0.0.0/0", "::/0"]
+    }
   }
 }
 
