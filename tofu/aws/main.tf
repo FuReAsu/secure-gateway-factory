@@ -46,7 +46,7 @@ resource "random_shuffle" "vpn_ports" {
 //Create Keypair
 resource "aws_key_pair" "vpn-factory-key" {
   key_name = "vpn-factory-key-${random_id.suffix.hex}"
-  public_key = file("../ssh-keys/vpn-factory-key.pub")
+  public_key = file("../../ssh-keys/vpn-factory-key.pub")
 }
 
 //VPC & Networking

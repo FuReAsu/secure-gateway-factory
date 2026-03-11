@@ -51,7 +51,7 @@ resource "random_shuffle" "vpn_ports" {
 
 //Get username from ssh public key
 locals {
-  public_key_content = trimspace(file("../ssh-keys/vpn-factory-key.pub"))
+  public_key_content = trimspace(file("../../ssh-keys/vpn-factory-key.pub"))
   key_parts = split(" ", local.public_key_content)
   detected_user_string = element(local.key_parts, length(local.key_parts) - 1)
   detected_user = split("@", local.detected_user_string)[0]

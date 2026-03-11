@@ -34,7 +34,7 @@ resource "random_shuffle" "vpn_ports" {
 
 resource "digitalocean_ssh_key" "vpn-factory-key" {
   name = "vpn-factory-key-${random_id.suffix.hex}"
-  public_key = file("../ssh-keys/vpn-factory-key.pub")
+  public_key = file("../../ssh-keys/vpn-factory-key.pub")
 }
 
 resource "digitalocean_droplet" "vpn-factory-server" {
