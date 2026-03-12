@@ -33,7 +33,7 @@ Gitlab CI's Input variables are utilized to provide drop down list of options to
 The ssh public key in the project is created as ssh key resource in cloud providers to provide access to the pipeline and the administrator. The matching ssh secret key is stored in CI/CD variables.
 
 > [!NOTE]
-> You should gerate your own ssh key pair and replace the public key as the current key in the project is unusable since there is no private counterpart available in the repo. (I am using it and I have it on local).
+> You should generate your own ssh key pair and replace the public key as the current key in the project is unusable since there is no private counterpart available in the repo. (I am using it and I have it on local).
 
 ## Secrets
 
