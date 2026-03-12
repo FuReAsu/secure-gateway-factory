@@ -52,8 +52,8 @@ Below are the required variables
 |TELEGRAM_BOT_TOKEN|Telegram bot API access token|For VPN Key delivery messages|
 |TELEGRAM_CHAT_ID|Telegram bot API chat ID|For VPN Key delivery messages|
 
-<a id="gcp-node"></a>
-**[1]**Using service account keys is not recommended for GCP. Since I haven't learned how to use oauth or roles for tofu, I just used the easiest way for authentication. Generating service account keys is disabled by default on GCP projects and you need to perform the following actions to do that.</br>
+<a id="gcp-note"></a>
+**[1]** Using service account keys is not recommended for GCP. Since I haven't learned how to use oauth or roles for tofu, I just used the easiest way for authentication. Generating service account keys is disabled by default on GCP projects and you need to perform the following actions to do that.</br>
 First, you need to have an account that has `roles/orgpolicy.policyAdmin`. If you are the owner, just grant your account that role. After that, you can run this gcloud command to enable service account key generation:
 ```bash
 gcloud resource-manager org-policies disable-enforce \
