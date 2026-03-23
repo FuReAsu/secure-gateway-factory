@@ -19,7 +19,12 @@ sudo bash $INSTALL_FILE install --port "$OVPN_PORT" --dns google > $LOG_FILE
 
 if ! [ "$?" ]; then
     echo "[ERROR] Installation failed... Please check $LOG_FILE"
-	exit 1
+	  exit 1
+fi
+
+if ! [ -f "$HOME/client.ovpn" ]; then
+    echo "[ERROR] No default client file found, installation failed... Please check $LOG_FILE..."
+    exit 1
 fi
 
 echo "==> [SUCCESS] OVPN server installation successful..."

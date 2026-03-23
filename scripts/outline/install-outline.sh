@@ -21,7 +21,7 @@ yes | sudo bash $INSTALL_FILE --api-port "$API_PORT" --keys-port "$KEYS_PORT" > 
 
 if ! [ "$?" ]; then
     echo "[ERROR] Installation failed... Please check $LOG_FILE"
-	exit 1
+    exit 1
 fi
 
 echo "==> [EXTRACT] Parsing API configuration..."
