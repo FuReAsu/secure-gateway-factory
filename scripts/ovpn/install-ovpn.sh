@@ -15,7 +15,7 @@ fi
 
 echo "==> [INSTALL] Running OVPN installer (this may take a minute)..."
 
-sudo bash $INSTALL_FILE install --port "$OVPN_PORT" --dns google > $LOG_FILE
+sudo bash $INSTALL_FILE install --port "$OVPN_PORT" --dns google >> $LOG_FILE
 
 if ! [ "$?" ]; then
     echo "[ERROR] Installation failed... Please check $LOG_FILE"
