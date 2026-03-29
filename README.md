@@ -60,7 +60,7 @@ Below are the required variables
 
 </br>
 <a id="gcp-note"></a>
- **[1]**  Using service account keys is not recommended for GCP. I have used to simplest method to authenticate to GCP which is with service account keys.</br>
+<b>[1]</b> Using service account keys is not recommended for GCP. I have used to simplest method to authenticate to GCP which is with service account keys.</br>
 
 Generating service account keys is disabled by default on GCP projects and you need to perform the following actions to do that.</br>
 
