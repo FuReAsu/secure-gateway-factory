@@ -72,6 +72,12 @@
         --header "Private-Token: $CI_PAT" \
         "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PIPELINE_ID}-${PROVIDER}"
     - echo "Deployment torn down and tfstate file deleted"
+    - echo "Informing environment deletion"
+    - |
+      curl -s -X POST \
+        -d chat_id="${TELEGRAM_CHAT_ID}" \
+        -d text="Environment [${CI_ENVIRONMENT_NAME}] has been torn down..." \
+        https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage > /dev/null
   cache:
     key: tofu-files
     paths:
