@@ -12,7 +12,7 @@
 
 do-provision:
   environment:
-    name: do-${REGION}-${CI_PIPELINE_ID}
+    name: do-${REGION}
     on_stop: do-tear-down
   extends:
     - .do-tofu-template
@@ -25,7 +25,7 @@ do-tear-down:
       artifacts: false
       optional: false
   environment:
-    name: do-${REGION}-${CI_PIPELINE_ID}
+    name: do-${REGION}
     action: stop
   extends:
     - .do-tofu-template

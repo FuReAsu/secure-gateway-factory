@@ -12,7 +12,7 @@
 
 aws-provision:
   environment:
-    name: aws-${REGION}-${CI_PIPELINE_ID}
+    name: aws-${REGION}
     on_stop: aws-tear-down
   extends:
     - .aws-tofu-template
@@ -25,7 +25,7 @@ aws-tear-down:
       artifacts: false
       optional: false
   environment:
-    name: aws-${REGION}-${CI_PIPELINE_ID}
+    name: aws-${REGION}
     action: stop
   extends:
     - .aws-tofu-template

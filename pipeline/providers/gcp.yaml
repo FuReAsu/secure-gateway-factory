@@ -12,7 +12,7 @@
 
 gcp-provision:
   environment:
-    name: gcp-${REGION}-${CI_PIPELINE_ID}
+    name: gcp-${REGION}
     on_stop: gcp-tear-down
   extends:
     - .gcp-tofu-template
@@ -25,7 +25,7 @@ gcp-tear-down:
       artifacts: false
       optional: false
   environment:
-    name: gcp-${REGION}-${CI_PIPELINE_ID}
+    name: gcp-${REGION}
     action: stop
   extends:
     - .gcp-tofu-template
