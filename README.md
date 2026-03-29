@@ -61,8 +61,11 @@ Below are the required variables
 </br>
 <a id="gcp-note"></a>
 **[1]** Using service account keys is not recommended for GCP. I have used to simplest method to authenticate to GCP which is with service account keys.</br>
+
 Generating service account keys is disabled by default on GCP projects and you need to perform the following actions to do that.</br>
+
 First, you need to have an account that has `roles/orgpolicy.policyAdmin`. If you are the owner, just grant your account that role. After that, you can run this gcloud command to enable service account key generation:
+
 ```bash
 gcloud resource-manager org-policies disable-enforce \
     iam.disableServiceAccountKeyCreation --organization=<YOUR_ORG_ID>
